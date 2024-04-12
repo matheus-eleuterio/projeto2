@@ -1,50 +1,55 @@
-#include <stdio.h>
 #include "tarefas.h"
+#include <stdio.h>
 
-int main(){
-    funcao fs[] = {criar, deletar, listar, salvar, carregar};
+int main() {
+  funcao fs[] = {criar, deletar, listar, salvar, carregar};
+  Tarefa tarefas[TOTAL];
+  int pos = 0;
+  ERROS erro = fs[4](tarefas, &pos); // Carregar tarefas do arquivo
 
-    Tarefa tarefas[TOTAL];
-    int pos = 0; 
-    ERROS erro = fs[4](tarefas, &pos); 
-    if (erro != OK) {
+  if (erro != OK) {
+    const char *msgErro = mensagemErro(erro);
+    printf("Erro ao carregar as tarefas. %s\n", msgErro);
+    return 1;
+  }
+
+  int opcao;
+  do {
+    printf("\nMenu principal\n");
+    printf("1 - Criar tarefa\n");
+    printf("2 - Deletar tarefa\n");
+    printf("3 - Listar tarefas\n");
+    printf("0 - Sair\n");
+    printf("Escolha uma opcao: ");
+
+    scanf("%d", &opcao);
+    getchar(); // Limpar o buffer após a leitura do inteiro
+
+    switch (opcao) {
+    case 0:
+      printf("Você saiu do programa\n");
+      break;
+    case 1:
+    case 2:
+    case 3:
+      erro = fs[opcao - 1](tarefas, &pos);
+      if (erro != OK) {
         const char *msgErro = mensagemErro(erro);
-        printf("Erro ao carregar as tarefas. %s\n", msgErro);
-        return 1; 
+        printf("Erro ao executar a operacao. %s\n", msgErro);
+      }
+      break;
+    default:
+      printf("Opcao invalida\n");
+      break;
     }
+  } while (opcao != 0);
 
-    int opcao;
-    do {
-        printf("\nMenu principal\n");
-        printf("1 - Criar tarefa\n");
-        printf("2 - Deletar tarefa\n");
-        printf("3 - Listar tarefas\n");
-        printf("0 - Sair\n");
-        printf("Escolha uma opcao: ");
+  erro = fs[3](tarefas, &pos); // Salvar tarefas no arquivo
+  if (erro != OK) {
+    const char *msgErro = mensagemErro(erro);
+    printf("Erro ao salvar as tarefas. %s\n", msgErro);
+    return 1;
+  }
 
-        scanf("%d", &opcao);
-        if (opcao == 0) {
-            printf("Você saiu do programa\n");
-            break; 
-        }
-
-        if (opcao < 1 || opcao > 3) {
-            printf("Opcao invalida\n");
-        } else {
-            erro = fs[opcao - 1](tarefas, &pos); 
-            if (erro != OK) {
-                const char *msgErro = mensagemErro(erro);
-                printf("Erro ao executar a operacao. %s\n", msgErro);
-            }
-        }
-    } while (1);
-
-    erro = fs[3](tarefas, &pos); 
-    if (erro != OK) {
-        const char *msgErro = mensagemErro(erro);
-        printf("Erro ao salvar as tarefas. %s\n", msgErro);
-        return 1; 
-    }
-
-    return 0; 
+  return 0;
 }
