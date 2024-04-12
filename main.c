@@ -5,13 +5,15 @@ int main(){
     funcao fs[] = {criar, deletar, listar, salvar, carregar};
 
     Tarefa tarefas[TOTAL];
-    int pos;
-    ERROS erro = fs[4](tarefas, &pos);
-    if(erro != OK)
-        pos = 0;
+    int pos = 0; 
+    ERROS erro = fs[4](tarefas, &pos); 
+    if (erro != OK) {
+        printf("Erro ao carregar as tarefas. Código de erro: %d\n", erro);
+        return 1; 
+    }
 
     int opcao;
-    do{
+    do {
         printf("\nMenu principal\n");
         printf("1 - Criar tarefa\n");
         printf("2 - Deletar tarefa\n");
@@ -20,15 +22,26 @@ int main(){
         printf("Escolha uma opcao: ");
 
         scanf("%d", &opcao);
-        opcao--;
-        if(opcao > 2)
+        if (opcao == 0) {
+            printf("Você saiu do programa\n");
+            break; 
+        }
+
+        if (opcao < 1 || opcao > 3) {
             printf("Opcao invalida\n");
-        else if(opcao >= 0)
-            fs[opcao](tarefas, &pos);
-        else
-            printf("Sair...\n");
+        } else {
+            erro = fs[opcao - 1](tarefas, &pos); 
+            if (erro != OK) {
+                printf("Erro ao executar a operacao. Código de erro: %d\n", erro);
+            }
+        }
+    } while (1);
 
-    } while(opcao >= 0);
+    erro = fs[3](tarefas, &pos); 
+    if (erro != OK) {
+        printf("Erro ao salvar as tarefas. Código de erro: %d\n", erro);
+        return 1; 
+    }
 
-    fs[3](tarefas, &pos);
+    return 0; 
 }
