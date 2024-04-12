@@ -8,7 +8,8 @@ int main(){
     int pos = 0; 
     ERROS erro = fs[4](tarefas, &pos); 
     if (erro != OK) {
-        printf("Erro ao carregar as tarefas. Código de erro: %d\n", erro);
+        const char *msgErro = mensagemErro(erro);
+        printf("Erro ao carregar as tarefas. %s\n", msgErro);
         return 1; 
     }
 
@@ -32,14 +33,16 @@ int main(){
         } else {
             erro = fs[opcao - 1](tarefas, &pos); 
             if (erro != OK) {
-                printf("Erro ao executar a operacao. Código de erro: %d\n", erro);
+                const char *msgErro = mensagemErro(erro);
+                printf("Erro ao executar a operacao. %s\n", msgErro);
             }
         }
     } while (1);
 
     erro = fs[3](tarefas, &pos); 
     if (erro != OK) {
-        printf("Erro ao salvar as tarefas. Código de erro: %d\n", erro);
+        const char *msgErro = mensagemErro(erro);
+        printf("Erro ao salvar as tarefas. %s\n", msgErro);
         return 1; 
     }
 
