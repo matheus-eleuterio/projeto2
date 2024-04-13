@@ -2,6 +2,70 @@
 #include <stdio.h>
 #include <string.h>
 
+ERROS exportar(Tarefa tarefas[], int *pos) {
+  int encontradas = 0;
+  FILE *fp = fopen("tarefas.txt", "w");
+  if (fp == NULL)
+    return 0;
+
+  for (int i = 0; i < *pos; i++) {
+      encontradas = 1;
+
+      fprintf(fp, "Pos: %d\t", i + 1);
+      fprintf(fp, "Prioridade: %d\t", tarefas[i].prioridade);
+      fprintf(fp, "Categoria: %s\t", tarefas[i].categoria);
+      fprintf(fp, "Descricao: %s\n", tarefas[i].descricao);
+    
+  }
+  fclose(fp);
+  return OK;
+}
+
+ERROS listar(Tarefa tarefas[], int *pos) {
+  char categoria[TAMANHO_CATEGORIA];
+  int listarTodas = 0;
+
+  if (*pos == 0) {
+    return SEM_TAREFAS;
+  }
+
+  printf("Entre com a categoria que deseja listar (tecle enter para mostrar "
+         "todas): ");
+  fgets(categoria, TAMANHO_CATEGORIA, stdin);
+  categoria[strcspn(categoria, "\n")] = '\0';
+
+
+  if (strlen(categoria) > 0 && categoria[0] != '\n') {
+    int encontradas = 0;
+    for (int i = 0; i < *pos; i++) {
+      if (strcmp(tarefas[i].categoria, categoria) == 0) {
+        encontradas = 1;
+        printf("Pos: %d\t", i + 1);
+        printf("Prioridade: %d\t", tarefas[i].prioridade);
+        printf("Categoria: %s\t", tarefas[i].categoria);
+        printf("Descricao: %s\n", tarefas[i].descricao);
+      }
+    }
+
+    if (!encontradas) {
+      printf("Nenhuma tarefa encontrada para a categoria: %s\n", categoria);
+    }
+  } else { 
+    listarTodas = 1;
+  }
+
+  if (listarTodas) {
+    for (int i = 0; i < *pos; i++) {
+      printf("Pos: %d\t", i + 1);
+      printf("Prioridade: %d\t", tarefas[i].prioridade);
+      printf("Categoria: %s\t", tarefas[i].categoria);
+      printf("Descricao: %s\n", tarefas[i].descricao);
+    }
+  }
+
+  return OK;
+}
+
 ERROS criar(Tarefa tarefas[], int *pos) {
   if (*pos >= TOTAL)
     return MAX_TAREFA;
@@ -47,51 +111,6 @@ ERROS deletar(Tarefa tarefas[], int *pos) {
   }
 
   *pos = *pos - 1;
-
-  return OK;
-}
-
-ERROS listar(Tarefa tarefas[], int *pos) {
-  char categoria[TAMANHO_CATEGORIA];
-  int listarTodas = 0;
-
-  if (*pos == 0) {
-    return SEM_TAREFAS;
-  }
-
-  printf("Entre com a categoria que deseja listar (tecle enter para mostrar "
-         "todas): ");
-  fgets(categoria, TAMANHO_CATEGORIA, stdin);
-  categoria[strcspn(categoria, "\n")] = '\0';
-
-  
-  if (strlen(categoria) > 0 && categoria[0] != '\n') {
-    int encontradas = 0;
-    for (int i = 0; i < *pos; i++) {
-      if (strcmp(tarefas[i].categoria, categoria) == 0) {
-        encontradas = 1;
-        printf("Pos: %d\t", i + 1);
-        printf("Prioridade: %d\t", tarefas[i].prioridade);
-        printf("Categoria: %s\t", tarefas[i].categoria);
-        printf("Descricao: %s\n", tarefas[i].descricao);
-      }
-    }
-
-    if (!encontradas) {
-      printf("Nenhuma tarefa encontrada para a categoria: %s\n", categoria);
-    }
-  } else { 
-    listarTodas = 1;
-  }
-
-  if (listarTodas) {
-    for (int i = 0; i < *pos; i++) {
-      printf("Pos: %d\t", i + 1);
-      printf("Prioridade: %d\t", tarefas[i].prioridade);
-      printf("Categoria: %s\t", tarefas[i].categoria);
-      printf("Descricao: %s\n", tarefas[i].descricao);
-    }
-  }
 
   return OK;
 }
